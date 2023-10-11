@@ -5,6 +5,7 @@ const { applyCors } = require("./middlewares");
 const generateTokens = require("./auth/token-generator");
 const { verifyAccessToken } = require("./auth/validate");
 const dbConnection = require("./config/db-config");
+const authRoutes = require('./routes/authRoutes')
 
 //setup
 const app = express();
@@ -13,6 +14,8 @@ app.use(cookieParser());
 app.use(express.json());
 dbConnection();
 
+
+app.use('/api', authRoutes)
 
 //Dummy
 const users = [{ id: 1, username: "fan", password: "zxc12345" }];
