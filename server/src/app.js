@@ -4,12 +4,15 @@ const cookieParser = require("cookie-parser");
 const { applyCors } = require("./middlewares");
 const generateTokens = require("./auth/token-generator");
 const { verifyAccessToken } = require("./auth/validate");
+const dbConnection = require("./config/db-config");
 
-// Middlewares setup
+//setup
 const app = express();
 applyCors(app);
 app.use(cookieParser());
 app.use(express.json());
+dbConnection();
+
 
 //Dummy
 const users = [{ id: 1, username: "fan", password: "zxc12345" }];
@@ -29,7 +32,7 @@ app.post("/login", (req, res) => {
 });
 
 app.get("/protected", verifyAccessToken, (req, res) => {
-    res.json({ message: "This is a protected resource." });
-  });
+  res.json({ message: "This is a protected resource." });
+});
 
 app.listen(config.port, () => console.log(`Server is running on http://localhost:${config.port}`));
