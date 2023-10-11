@@ -6,6 +6,7 @@ const generateTokens = (user) => {
     {
       userId: user.id,
       username: user.username,
+      role: user.role.role
     },
     config.accessSecret,
     {
@@ -17,6 +18,7 @@ const generateTokens = (user) => {
     {
       userId: user.id,
       username: user.username,
+      role: user.role.role
     },
     config.refreshSecret,
     {

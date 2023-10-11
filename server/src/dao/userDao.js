@@ -6,7 +6,18 @@ const createUser = async (userData) => {
   return newUser;
 };
 
+const findUsername = async (username) => {
+  return User.findOne({ username })
+  .populate('role');
+};
+
+const findEmail = async (email) => {
+  return User.findOne({ email })
+  .populate('role');
+};
 
 module.exports = {
-    createUser
-  };
+  createUser,
+  findUsername,
+  findEmail,
+};
