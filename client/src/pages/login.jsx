@@ -1,10 +1,10 @@
 import { useState } from "react";
-import axios from "axios";
 import LoginForm from "../components/login-form";
 import { useNavigate } from "react-router-dom";
+import { api } from "../api/api-config";
 
 export default function Login() {
-  const [username, setUsername] = useState("");
+  const [identifier, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -12,10 +12,10 @@ export default function Login() {
     e.preventDefault();
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/login",
+      const response = await api.post(
+        "/login",
         {
-          username,
+          identifier,
           password,
         },
         {
@@ -34,7 +34,7 @@ export default function Login() {
 
   return (
     <div>
-      <LoginForm onSubmit={handleSubmit} username={username} setUsername={setUsername} password={password} setPassword={setPassword} />
+      <LoginForm onSubmit={handleSubmit} username={identifier} setUsername={setUsername} password={password} setPassword={setPassword} />
     </div>
   );
 }
