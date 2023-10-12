@@ -132,9 +132,14 @@ const logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (refreshToken) {
     cache.put(refreshToken, true, 7 * 24 * 60 * 60 * 1000);
-    res.clearCookie("refreshToken");
   }
 
+  // can't use because no front-end yet
+  // if (accessToken) {
+  //   cache.put(accessToken, true, 15 * 60 * 1000);
+  // }
+
+  res.clearCookie("refreshToken");
   res.json({ message: "Logged out successfully" });
 };
 
