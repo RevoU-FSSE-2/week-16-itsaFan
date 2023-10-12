@@ -45,8 +45,33 @@ const viewAllTodos = async (req, res) => {
   }
 };
 
+const deleteTodo = async (req, res) => {
+  const { todoId } = req.params;
+  const userId = req.userPayload.userId;
+  const userRole = req.userPayload.role;
+
+  try {
+    const todo = await todoDao.getTodoByID(todoId);
+    console.log(todo);
+    if (!todo) {
+      return res.status(404).json({ message: "Todo not found" });
+    }
+
+    if (todo.createdBy._id.toString() !== userId && userRole !== "ROLE_ADMIN") {
+      return res.status(403).json({ message: "Only the creator or an admin can delete it" });
+    }
+
+    await todoDao.deleteTodo(todoId);
+    return res.status(200).json({ message: "Todo deleted successfully" });
+  } catch (error) {
+    console.error("Internal server error:", error);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
+};
+
 module.exports = {
   createTodo,
   viewTodoCreatedBy,
   viewAllTodos,
+  deleteTodo,
 };
