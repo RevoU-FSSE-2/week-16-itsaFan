@@ -17,13 +17,6 @@ dbConnection();
 app.use('/api', authRoutes)
 app.use('/api/user', userRoutes)
 
-//Dummy
-// const users = [{ id: 1, username: "fan", password: "zxc12345" }];
-
-// app.get("/protected", verifyAccessToken, (req, res) => {
-//   res.json({ message: "This is a protected resource." });
-// });
-
 
 // app.post("/refresh", (req, res) => {
 //   const refreshToken = req.cookies.refreshToken;

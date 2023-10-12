@@ -130,9 +130,15 @@ const resetPassword = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  res.clearCookie("refreshToken");
+  res.json({ message: "Logged out successfully" });
+};
+
 module.exports = {
   register,
   login,
   requestResetPassword,
   resetPassword,
+  logout,
 };
