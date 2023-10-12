@@ -4,7 +4,6 @@ const generateTokens = require("../auth/token-generator");
 const { generateResetToken } = require("../middlewares");
 const { sendEmail } = require("../config/emailService");
 const { getResetPaswEmailContent } = require("../config/emailTemplates");
-const User = require("../models/user");
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -139,3 +138,4 @@ module.exports = {
   resetPassword,
   logout,
 };
+
