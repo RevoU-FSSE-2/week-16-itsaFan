@@ -6,6 +6,16 @@ const createTodo = async (todoData) => {
   return newTodo;
 };
 
+const getTodoByCreator = async (createdBy) => {
+  return Todo.find({ createdBy }).populate("createdBy", "_id username email");
+};
+
+const getAllTodos = async () => {
+  return Todo.find();
+};
+
 module.exports = {
   createTodo,
+  getTodoByCreator,
+  getAllTodos,
 };
