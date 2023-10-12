@@ -10,7 +10,7 @@ const register = async (req, res) => {
   const { username, email, password } = req.body;
 
   try {
-    const existingUsername = await userDao.findUsername(username);
+    const existingUsername = await userDao.findUserByUsername(username);
     if (existingUsername) {
       return res.status(403).json({ message: "Username already taken" });
     }
@@ -46,9 +46,9 @@ const login = async (req, res) => {
     }
 
     if (identifier.includes("@")) {
-      user = await userDao.findEmail(identifier);
+      user = await userDao.findUserByEmail(identifier);
     } else {
-      user = await userDao.findUsername(identifier);
+      user = await userDao.findUserByUsername(identifier);
     }
 
     if (!user) {
@@ -72,7 +72,7 @@ const requestResetPassword = async (req, res) => {
   const { email } = req.body;
 
   try {
-    const user = await userDao.findEmail(email);
+    const user = await userDao.findUserByEmail(email);
     if (!user) {
       return res.status(404).json({ message: "No email found" });
     }
@@ -109,10 +109,7 @@ const resetPassword = async (req, res) => {
       });
     }
 
-    const user = await User.findOne({
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
+    const user = await userDao.findUserByResetTokenAndExpireDate(token);
 
     if (!user) {
       return res.status(400).json({ message: "Invalid or expired reset token" });

@@ -6,18 +6,24 @@ const createUser = async (userData) => {
   return newUser;
 };
 
-const findUsername = async (username) => {
-  return User.findOne({ username })
-  .populate('role');
+const findUserByUsername = async (username) => {
+  return User.findOne({ username }).populate("role");
 };
 
-const findEmail = async (email) => {
-  return User.findOne({ email })
-  .populate('role');
+const findUserByEmail = async (email) => {
+  return User.findOne({ email }).populate("role");
+};
+
+const findUserByResetTokenAndExpireDate = async (token) => {
+  return await User.findOne({
+    resetPasswordToken: token,
+    resetPasswordExpires: { $gt: Date.now() },
+  });
 };
 
 module.exports = {
   createUser,
-  findUsername,
-  findEmail,
+  findUserByUsername,
+  findUserByEmail,
+  findUserByResetTokenAndExpireDate,
 };
