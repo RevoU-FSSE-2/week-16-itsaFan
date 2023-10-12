@@ -10,6 +10,11 @@ const verifyAccessToken = (req, res, next) => {
 
   if (authHeader) {
     const token = authHeader.split(" ")[1];
+
+    if(cache.get(token)) {
+      return res.status(401).json({ error: "Access token is blacklisted." });
+    }
+
     jwt.verify(token, config.accessSecret, (error, userPayload) => {
       if (error) {
         console.log("JWT verification Error:", error);

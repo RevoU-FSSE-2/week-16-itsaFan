@@ -130,14 +130,16 @@ const resetPassword = async (req, res) => {
 
 const logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
+  const accessToken = req.body.accessToken; 
+  
   if (refreshToken) {
     cache.put(refreshToken, true, 7 * 24 * 60 * 60 * 1000);
   }
 
   // can't use because no front-end yet
-  // if (accessToken) {
-  //   cache.put(accessToken, true, 15 * 60 * 1000);
-  // }
+  if (accessToken) {
+    cache.put(accessToken, true, 15 * 60 * 1000);
+  }
 
   res.clearCookie("refreshToken");
   res.json({ message: "Logged out successfully" });
