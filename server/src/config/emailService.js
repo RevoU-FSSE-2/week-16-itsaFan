@@ -1,20 +1,21 @@
 const nodemailer = require("nodemailer");
+const config = require("./config");
 
 const transporter = nodemailer.createTransport({
-  host: "smtp.ethereal.email",
+  host: config.smtpMail,
   port: 587,
   auth: {
-    user: "graham.ebert@ethereal.email",
-    pass: "cCA53ZfG8jhkWBpdnh",
+    user: config.email,
+    pass: config.emailPasw,
   },
 });
 
 const sendEmail = async (options) => {
   const mailOptions = {
-    from: "graham.ebert@ethereal.email",
+    from: config.email,
     to: options.to,
     subject: options.subject,
-    html: options.html, 
+    html: options.html,
   };
 
   return transporter.sendMail(mailOptions);
