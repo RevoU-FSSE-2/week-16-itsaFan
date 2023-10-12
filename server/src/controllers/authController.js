@@ -132,8 +132,9 @@ const logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
   if (refreshToken) {
     cache.put(refreshToken, true, 7 * 24 * 60 * 60 * 1000);
+    res.clearCookie("refreshToken");
   }
-  // res.clearCookie("refreshToken");
+
   res.json({ message: "Logged out successfully" });
 };
 
