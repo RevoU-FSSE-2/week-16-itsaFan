@@ -10,7 +10,7 @@ const generateTokens = (user) => {
     },
     config.accessSecret,
     {
-      expiresIn: "30s",
+      expiresIn: "15m",
     }
   );
 

@@ -1,9 +1,9 @@
-const permissionDao = require("../dao/permissionDao");
-const userDao = require("../dao/userDao");
+const permissionDao = require("./permissionDao");
+const userDao = require("./userDao");
+const todoDao = require("./todoDao");
 
-
-module.exports =  {
-    permissionDao,
-    userDao
-}
-
+module.exports = {
+  permissionDao,
+  userDao,
+  todoDao,
+};
