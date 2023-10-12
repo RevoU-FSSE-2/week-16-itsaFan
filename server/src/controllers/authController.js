@@ -1,9 +1,10 @@
 const { permissionDao, userDao } = require("../dao");
 const { isValidPassword } = require("../utils/password-validation");
-const generateTokens = require("../auth/token-generator");
 const { generateResetToken } = require("../middlewares");
 const { sendEmail } = require("../config/emailService");
 const { getResetPaswEmailContent } = require("../config/emailTemplates");
+const cache = require("memory-cache");
+const { generateLoginTokens, generateAccessToken } = require("../auth/token-generator");
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -57,9 +58,9 @@ const login = async (req, res) => {
     if (!user.verifyPassword(password)) {
       return res.status(401).json({ message: "Wrong password" });
     }
-  
+
     // console.log('Successful login flag:', res.locals.successfulLogin);
-    const { accessToken, refreshToken } = generateTokens(user);
+    const { accessToken, refreshToken } = generateLoginTokens(user);
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
     res.json({ accessToken });
   } catch (error) {
@@ -128,8 +129,22 @@ const resetPassword = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  res.clearCookie("refreshToken");
+  const refreshToken = req.cookies.refreshToken;
+  if (refreshToken) {
+    cache.put(refreshToken, true, 7 * 24 * 60 * 60 * 1000);
+  }
+  // res.clearCookie("refreshToken");
   res.json({ message: "Logged out successfully" });
+};
+
+const refreshToken = async (req, res) => {
+  try {
+    const newAccessToken = generateAccessToken(req.userPayload.userId, req.userPayload.username, req.userPayload.role);
+    res.json({ accessToken: newAccessToken });
+  } catch (error) {
+    console.error("Internal server error:", error);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
 };
 
 module.exports = {
@@ -138,5 +153,5 @@ module.exports = {
   requestResetPassword,
   resetPassword,
   logout,
+  refreshToken,
 };
-
