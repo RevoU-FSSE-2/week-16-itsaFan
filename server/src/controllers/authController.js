@@ -1,6 +1,10 @@
 const { permissionDao, userDao } = require("../dao");
 const { isValidPassword } = require("../utils/password-validation");
 const generateTokens = require("../auth/token-generator");
+const { generateResetToken } = require("../middlewares");
+const { sendEmail } = require("../config/emailService");
+const { getResetPaswEmailContent } = require("../config/emailTemplates");
+const User = require("../models/user");
 
 const register = async (req, res) => {
   const { username, email, password } = req.body;
@@ -42,9 +46,9 @@ const login = async (req, res) => {
     }
 
     if (identifier.includes("@")) {
-      user = await userDao.findEmail(identifier)
+      user = await userDao.findEmail(identifier);
     } else {
-      user = await userDao.findUsername(identifier)
+      user = await userDao.findUsername(identifier);
     }
 
     if (!user) {
@@ -58,7 +62,68 @@ const login = async (req, res) => {
     const { accessToken, refreshToken } = generateTokens(user);
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
     res.json({ accessToken });
+  } catch (error) {
+    console.error("Internal server error:", error);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
+};
 
+const requestResetPassword = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await userDao.findEmail(email);
+    if (!user) {
+      return res.status(404).json({ message: "No email found" });
+    }
+
+    const token = generateResetToken();
+    user.resetPasswordToken = token;
+    // user.resetPasswordExpires = Date.now() + 60000;
+    user.resetPasswordExpires = Date.now() + 3600000;
+
+    await user.save();
+
+    const emailContent = getResetPaswEmailContent(token);
+
+    await sendEmail({
+      to: user.email,
+      subject: "Reset Password",
+      html: emailContent,
+    });
+
+    res.status(200).json({ message: "Password reset link sent to email" });
+  } catch (error) {
+    console.error("Internal server error:", error);
+    return res.status(500).json({ message: "Internal Server error" });
+  }
+};
+
+const resetPassword = async (req, res) => {
+  const { token, newPassword } = req.body;
+
+  try {
+    if (!isValidPassword(newPassword)) {
+      return res.status(400).json({
+        message: "Password needs to be at least 8 characters long and contain both numerical and alphabetical letters.",
+      });
+    }
+
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid or expired reset token" });
+    }
+
+    user.password = newPassword;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.status(200).json({ message: "Password successfully reset" });
   } catch (error) {
     console.error("Internal server error:", error);
     return res.status(500).json({ message: "Internal Server error" });
@@ -68,5 +133,6 @@ const login = async (req, res) => {
 module.exports = {
   register,
   login,
+  requestResetPassword,
+  resetPassword,
 };
-

@@ -2,7 +2,6 @@ const express = require("express");
 const config = require("./config/config");
 const cookieParser = require("cookie-parser");
 const { applyCors } = require("./middlewares");
-const { verifyAccessToken } = require("./auth/validate");
 const dbConnection = require("./config/db-config");
 const authRoutes = require('./routes/authRoutes')
 const userRoutes = require('./routes/userRoutes')
