@@ -14,7 +14,7 @@ const sendEmail = async (options) => {
     from: "graham.ebert@ethereal.email",
     to: options.to,
     subject: options.subject,
-    text: options.text,
+    html: options.html, 
   };
 
   return transporter.sendMail(mailOptions);
