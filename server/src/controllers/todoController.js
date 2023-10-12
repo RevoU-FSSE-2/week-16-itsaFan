@@ -52,13 +52,13 @@ const deleteTodo = async (req, res) => {
 
   try {
     const todo = await todoDao.getTodoByID(todoId);
-    console.log(todo);
+    // console.log(todo);
     if (!todo) {
       return res.status(404).json({ message: "Todo not found" });
     }
 
     if (todo.createdBy._id.toString() !== userId && userRole !== "ROLE_ADMIN") {
-      return res.status(403).json({ message: "Only the creator or an admin can delete it" });
+      return res.status(403).json({ message: "Only the creator or admin can delete it" });
     }
 
     await todoDao.deleteTodo(todoId);

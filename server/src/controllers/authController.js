@@ -58,7 +58,7 @@ const login = async (req, res) => {
       return res.status(401).json({ message: "Wrong password" });
     }
   
-    console.log('Successful login flag:', res.locals.successfulLogin);
+    // console.log('Successful login flag:', res.locals.successfulLogin);
     const { accessToken, refreshToken } = generateTokens(user);
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
     res.json({ accessToken });
