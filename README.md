@@ -74,7 +74,7 @@ The purpose of this assignment is to learn about JWT and apply it on our app for
 If you want to test and see this app api-endpoint and its functionality as mentioned in `key features` above, you can visit the link below <br>
 
 [View openapi.yaml here](./server/src/doc/openapi.yaml)<br>
-### You can access the api-documentation here : [Link Here!]()
+### You can access the api-documentation here : [Link Here!](https://todo-server-production-e6c4.up.railway.app/api-docs/)
 Don't Forget to switch the `Server` to deployment or production.<br>
 If you don't want to register, you can try accessing endpoints with this created accounts that I prepare for you, try `login` to get the `accessToken` to put it into headers.authorization & `refreshToken` will be stored on cookies..
 
@@ -92,7 +92,7 @@ If you don't want to register, you can try accessing endpoints with this created
 
 
 ### Screenshot
-![Screenshot](images/image.png)
+![Screenshot](./ss/Swagger-UI.png)
 
 
 
