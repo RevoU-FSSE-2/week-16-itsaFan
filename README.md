@@ -23,12 +23,13 @@ This project is made for RevoU assignment.<br>
 The purpose of this assignment is to learn about JWT and apply it on our app for authentication and authorization purpose.
 
 - Milestones:
+
   - Create `Register` & `Login` endpoints.
   - Generate `accessToken` & `refreshToken` after successfuly login request.
   - Inject `refreshToken` to cookie and response body `accessToken`.
   - Create `logout` to clear the cookie.
   - Implement `ResetPasswordRequest` & `ResetPassword` endpoint.
-  - Using `nodemailer`  to make dummy email for `reset password request`
+  - Using `nodemailer` to make dummy email for `reset password request`
   - Implementing `roles` for authorization purpose
   - Limiting / lockout login attempt by IP & Username, Email, or Password
   - Blacklist `refreshToken` & `accessToken` after hitting logout endpoint.
@@ -57,6 +58,28 @@ The purpose of this assignment is to learn about JWT and apply it on our app for
   - Logout:
     - Upon logout, the cookies will be cleared and both tokens will be stored on `memory-cache` for blacklisting purpose.
     - Any blacklisted tokens will not be able to authenticate.
+
+#### Guide to use this app
+
+1. Git clone this repository.
+2. For this project, we only need `server` folder.
+3. Use `npm install` on `server` folder to install all depedencies.
+4. `Server` have .env file, so you need to configure your own .env.
+5. Refer to `.env.example` file on `server` root directory.
+6. Then to start the project, turn on the server with `npm start`.
+
+### Deployment && Screenshots
+
+**Notes: this project only required server**<br>
+If you want to test and see this app api-endpoint and its functionality as mentioned in `key features` above, you can visit the link below <br>
+
+
+[View openapi.yaml here](./server/src/doc/openapi.yaml)<br>
+
+
+
+
+
 
 
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/GB9tUzun)
