@@ -6,6 +6,8 @@ const { getResetPaswEmailContent } = require("../config/emailTemplates");
 const cache = require("memory-cache");
 const { generateLoginTokens, generateAccessToken } = require("../auth/token-generator");
 
+
+
 const register = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -130,8 +132,8 @@ const resetPassword = async (req, res) => {
 
 const logout = async (req, res) => {
   const refreshToken = req.cookies.refreshToken;
-  const accessToken = req.body.accessToken; 
-  
+  const accessToken = req.body.accessToken;
+
   if (refreshToken) {
     cache.put(refreshToken, true, 7 * 24 * 60 * 60 * 1000);
   }
