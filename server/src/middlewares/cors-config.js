@@ -21,9 +21,7 @@ const setCors = (req, callback) => {
 };
 
 const applyCors = (app) => {
-    app.use(cors(setCors))
-}
-
-
+  app.use(cors(setCors));
+};
 
 module.exports = { applyCors };

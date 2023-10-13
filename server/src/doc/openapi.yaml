@@ -4,6 +4,8 @@ info:
   version: 1.0.0
   description: Steffansim, Week 16 RevoU Assignment - API Documentation
 servers:
+  - url: https://todo-server-production-e6c4.up.railway.app
+    description: Production or Deployment Server
   - url: http://localhost:3000
     description: Development Server
 components:

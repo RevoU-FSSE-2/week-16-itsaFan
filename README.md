@@ -76,7 +76,7 @@ If you want to test and see this app api-endpoint and its functionality as menti
 [View openapi.yaml here](./server/src/doc/openapi.yaml)<br>
 ### You can access the api-documentation here : [Link Here!]()
 Don't Forget to switch the `Server` to deployment or production.<br>
-You can try accessing endpoints with this created accounts that I prepare for you, try `login` to get the `accessToken` to put it into headers.authorization & `refreshToken` will be stored on cookies..
+If you don't want to register, you can try accessing endpoints with this created accounts that I prepare for you, try `login` to get the `accessToken` to put it into headers.authorization & `refreshToken` will be stored on cookies..
 
 ```json
 {
