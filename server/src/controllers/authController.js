@@ -5,7 +5,7 @@ const { sendEmail } = require("../config/emailService");
 const { getResetPaswEmailContent } = require("../config/emailTemplates");
 const cache = require("memory-cache");
 const { generateLoginTokens, generateAccessToken } = require("../auth/token-generator");
-
+const { handleFailedAttempt, FAILED_ATTEMPTS_LIMIT } = require("../utils/limit-handlers");
 
 
 const register = async (req, res) => {
@@ -40,13 +40,19 @@ const register = async (req, res) => {
 const login = async (req, res) => {
   const { identifier, password } = req.body;
 
+  const cacheKey = `login-attempts-${identifier}-${password}`;
   try {
-    let user;
+    const currentAttempts = cache.get(cacheKey) || 0;
+
+    if (currentAttempts >= FAILED_ATTEMPTS_LIMIT) {
+      return res.status(429).json({ message: "You have been locked out because this account has attempted to login too many times. Please try again in 15 minutes." });
+    }
 
     if (!identifier || !password) {
       return res.status(400).json({ message: "Email/username & password is required" });
     }
 
+    let user;
     if (identifier.includes("@")) {
       user = await userDao.findUserByEmail(identifier);
     } else {
@@ -54,22 +60,57 @@ const login = async (req, res) => {
     }
 
     if (!user) {
-      return res.status(401).json({ message: "Username or Email not found" });
+      return handleFailedAttempt(res, cacheKey, "Username or Email not found");
     }
 
     if (!user.verifyPassword(password)) {
-      return res.status(401).json({ message: "Wrong password" });
+      return handleFailedAttempt(res, cacheKey, "Wrong password");
     }
 
-    // console.log('Successful login flag:', res.locals.successfulLogin);
+    cache.del(cacheKey);
+
     const { accessToken, refreshToken } = generateLoginTokens(user);
     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
-    res.json({ accessToken });
+    return res.json({ accessToken });
   } catch (error) {
     console.error("Internal server error:", error);
     return res.status(500).json({ message: "Internal Server error" });
   }
 };
+
+// const login = async (req, res) => {
+//   const { identifier, password } = req.body;
+
+//   try {
+//     let user;
+
+//     if (!identifier || !password) {
+//       return res.status(400).json({ message: "Email/username & password is required" });
+//     }
+
+//     if (identifier.includes("@")) {
+//       user = await userDao.findUserByEmail(identifier);
+//     } else {
+//       user = await userDao.findUserByUsername(identifier);
+//     }
+
+//     if (!user) {
+//       return res.status(401).json({ message: "Username or Email not found" });
+//     }
+
+//     if (!user.verifyPassword(password)) {
+//       return res.status(401).json({ message: "Wrong password" });
+//     }
+
+//     // console.log('Successful login flag:', res.locals.successfulLogin);
+//     const { accessToken, refreshToken } = generateLoginTokens(user);
+//     res.cookie("refreshToken", refreshToken, { httpOnly: true, secure: false, maxAge: 7 * 24 * 60 * 60 * 1000 });
+//     res.json({ accessToken });
+//   } catch (error) {
+//     console.error("Internal server error:", error);
+//     return res.status(500).json({ message: "Internal Server error" });
+//   }
+// };
 
 const requestResetPassword = async (req, res) => {
   const { email } = req.body;
